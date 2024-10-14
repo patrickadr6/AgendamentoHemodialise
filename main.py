@@ -67,57 +67,6 @@ for viagem in viagens_tqs:
 
 print("Todas as viagens foram agendadas com sucesso!")
 
-#print(viagem)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#LISTAS DE TODAS AS VIAGENS PROVIDENCIAR!!
-
-# para cada viagem na viagens_segunda_quarta_sexta:
-#   para cada dia em segunda_quarta_sexta:
-#       url_viagem = criarViagem(viagem[0] <- dados da viagem, dia)
-#       FUNÇÃO PARA ADICIONAR CADA PACIENTE NA VIAGEM!
-#           adicionar_pacientes(url_viagem, viagem[1])
-
-
-
-
 
 
 
@@ -140,18 +89,3 @@ print("Todas as viagens foram agendadas com sucesso!")
 # 3º turno
 # 4º turno
 # ???
-
-# van ou carro
-
-# para cada viagem, farei uma lista com 2 listas:
-# [cidade, horário, objetivo, motorista, observação, hospital, caminho (ida, volta ou ambos)]
-#  e a segunda, uma lista de listas com os dados dos pacientes:
-# [[nome/cartão sus/cpf, tem acompanhante?, dia diferente ("N" ou "" por ex)?], [nome, tem acompanhante?, horário diferente?]]
-
-
-# viagem1 = [["Bragança Paulista", "03:00", "05:00", "TRANSPORTE DE PACIENTES", "A", "ABASTECIMENTO ", "HUSF", "IDA/VOLTA"], [["PATRICK ADRIEL RIBAS", "N", "N"]]]
-
-# colocar todas as viagens da msm frequencia em uma lista?
-
-# para cada segunda, quarta e sexta do mês:
-#    
