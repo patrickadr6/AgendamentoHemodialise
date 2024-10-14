@@ -6,5 +6,5 @@ Nota: Ao executar o código, deve-se passar parâmetros --usuario e --senha para
 
 ## Sugestões
 * Adicionar logging em um arquivo ao invés de print
-* Criar ID para as viagens
+* Colocar ID para as viagens e chave nome para os pacientes
 * Continuar agendamento a partir de alguma viagem e dia específico?
