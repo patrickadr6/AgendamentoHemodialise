@@ -15,7 +15,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 
-print("\n\n\n\n\n*************          AGENDAMENTO DE HEMODIALISE 3000          *************\n")
+print("\n\n\n\n\n*************          AGENDADOR DE HEMODIALISE 3000          *************\n")
 
 # Pegar usuário e senha dos parâmetros passados.
 parser = argparse.ArgumentParser(description='Script para agendamento de transporte de hemodiálise. Segunda, quarta e sexta, e terça, quinta e sábado.')
