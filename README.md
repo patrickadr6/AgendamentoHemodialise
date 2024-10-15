@@ -10,6 +10,6 @@ Nota: Ao executar o código, deve-se passar parâmetros --usuario e --senha para
 * Continuar agendamento a partir de alguma viagem e dia específico?
 
 * Agendamento das vans fixas
-  ** Criar dados das viagens
-  ** reutilizar função criarviagem, calendário de segunda a sexta
+  Criar dados das viagens
+  Reutilizar função criarviagem, calendário de segunda a sexta
 * Agendamento de fisioterapia?
