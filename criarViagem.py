@@ -154,12 +154,11 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
         botao_destino = w.until(EC.element_to_be_clickable((By.ID, 'j_idt4024')))
         botao_destino.click()
 
-        if paciente['tipo'] == 'IDA/VOLTA' or paciente['tipo'] == 'IDA':
-            destino_novo = w.until(EC.element_to_be_clickable((By.ID, 'destinoNovo')))
-            destino_novo.send_keys(paciente['destino'])
+        destino_novo = w.until(EC.element_to_be_clickable((By.ID, 'destinoNovo')))
 
+        if paciente['tipo'] == 'IDA/VOLTA' or paciente['tipo'] == 'IDA':
+            destino_novo.send_keys(paciente['destino'])
         elif paciente['tipo'] == 'VOLTA':
-            destino_novo = w.until(EC.element_to_be_clickable((By.ID, "destinoNovo")))
             destino_novo.send_keys(local_espera)
         else:
             raise
@@ -241,12 +240,12 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
 
             time.sleep(2)
 
-            if paciente['tipo'] == 'IDA':
+            if paciente['tipo'] == 'IDA' or paciente['tipo'] == 'VOLTA':
                 w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_label'))).click()
-                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_1'))).click()
 
+            if paciente['tipo'] == 'IDA':
+                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_1'))).click()
             elif paciente['tipo'] == 'VOLTA':
-                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_label'))).click()
                 w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_2'))).click()
 
             w.until(EC.element_to_be_clickable((By.ID, 'esperaAcomp_input'))).send_keys("O MESMO")
