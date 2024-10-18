@@ -15,7 +15,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 
-print("\n\n\n\n\n*************          AGENDADOR DE HEMODIALISE 3000          *************\n")
+print("\n\n\n\n\n*************          AGENDAMENTO DE HEMODIALISE 3000          *************\n")
 
 # Pegar usuário e senha dos parâmetros passados.
 parser = argparse.ArgumentParser(description='Script para agendamento de transporte de hemodiálise. Segunda, quarta e sexta, e terça, quinta e sábado.')
@@ -39,7 +39,8 @@ w = WebDriverWait(driver, 120)
 # Pegar os dias q são segunda quarta e sexta, ou terça quinta e sabado
 mes = int(input("Digite o mês (9, 10, 11) a ser agendado:\n"))
 ano = int(input("Digite o ano do mês a ser agendado:\n"))
-segunda_quarta_sexta, terca_quinta_sabado = calendario.separar_dias_do_mes(mes, ano)
+conf_vans = input("Agendar as vans normais (S/N)?\n")
+conf_hemo = input("Agendar hemodiálise (S/N)?\n")
 
 # Logar no sistema
 driver.get("https://rangsaude.atibaia.sp.gov.br/login.xhtml")
@@ -52,20 +53,42 @@ driver.implicitly_wait(2)
 estabelecimento = driver.find_element(By.CLASS_NAME, "ui-commandlink").click()
 time.sleep(2)
 
-# Pegar viagens das 2 listas
-viagens_sqs = viagens.viagens_segunda_quarta_sexta
-viagens_tqs = viagens.viagens_terca_quinta_sabado
+# Pegar viagens das 3 listas
+if conf_vans == "S":
+    print("\nAgendando as vans comuns...\n\n")
+    viagens_van = viagens.viagens_van
+    segunda_a_sexta = calendario.separar_segunda_a_sexta(mes, ano)
 
-# criar viagem e adicionar pacientes
-for viagem in viagens_sqs:
-    for dia in segunda_quarta_sexta.items():
-        criarViagem.criar_viagem(driver, viagem, list(dia), w)
+    for viagem in viagens_van:
+        for dia in segunda_a_sexta.items():
+            criarViagem.criar_viagem(driver, viagem, list(dia), w)
+elif conf_vans == "N":
+    pass
+else:
+    raise
 
-for viagem in viagens_tqs:
-    for dia in terca_quinta_sabado.items():
-        criarViagem.criar_viagem(driver, viagem, list(dia), w)
 
-print("Todas as viagens foram agendadas com sucesso!")
+if conf_hemo == "S":
+    print("\nAgendando hemodiálise...\n\n")
+    viagens_sqs = viagens.viagens_segunda_quarta_sexta
+    viagens_tqs = viagens.viagens_terca_quinta_sabado
+
+    segunda_quarta_sexta, terca_quinta_sabado = calendario.separar_dias_hemo(mes, ano)
+
+    # criar viagem e adicionar pacientes
+    for viagem in viagens_sqs:
+        for dia in segunda_quarta_sexta.items():
+            criarViagem.criar_viagem(driver, viagem, list(dia), w)
+
+    for viagem in viagens_tqs:
+        for dia in terca_quinta_sabado.items():
+            criarViagem.criar_viagem(driver, viagem, list(dia), w)
+elif conf_hemo == "N":
+    pass
+else:
+    raise
+
+print("\nTodas as viagens foram agendadas com sucesso!")
 
 
 
