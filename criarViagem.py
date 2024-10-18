@@ -14,13 +14,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
 
+@retry(stop_max_attempt_number=5)
 def criar_viagem(driver, viagem, dia, w):
 
     # Criar nova viagem
     driver.get("https://rangsaude.atibaia.sp.gov.br/novaViagem.xhtml")
 
     cidade = viagem[0]['cidade']
-    horario = dia[0] + " " + viagem[0]['horario_saida']
+    horario = ""
+    try:
+        horario = viagem[0]['horario_dias'].get(dia[1])
+        if horario:
+            horario = dia[0] + " " + horario
+        elif not horario:
+            horario = dia[0] + " " + viagem[0]['horario_saida']
+    except KeyError:
+        horario = dia[0] + " " + viagem[0]['horario_saida']
+
     objetivo = viagem[0]['objetivo']
     veiculo = viagem[0]['veiculo']
     motorista = viagem[0]['motorista']
@@ -89,6 +99,11 @@ def criar_viagem(driver, viagem, dia, w):
     driver.switch_to.window(driver.window_handles[0])
     id_viagem = driver.current_url.split("=")[1]
 
+    # Checa se viagem não tem pacientes para adicionar
+    if len(viagem) == 1:
+        return print(f"{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n\n")
+
+
     add_pacientes(driver, id_viagem, viagem, dia, w)
 
     print(f"{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n\n")
@@ -108,13 +123,15 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
 
         driver.get('https://rangsaude.atibaia.sp.gov.br/addPacienteViagem.xhtml?cod=' + id_viagem)
 
-
+        # ACHAR PACIENTE
         paciente_input = w.until(EC.element_to_be_clickable((By.ID, "formCadastro:paciente_input")))
         paciente_input.send_keys(paciente['id'])
         paciente_panel = w.until(EC.element_to_be_clickable((By.XPATH, "//*[@id='formCadastro:paciente_panel']/table/tbody/tr[1]")))
         paciente_panel.click()
-        time.sleep(1)
+        
+        w.until(EC.presence_of_element_located((By.ID, 'formCadastro:viagensPac')))
 
+        # CASO FOR SÓ IDA OU VOLTA
         if paciente['tipo'] == 'IDA':
             tipo_ida = driver.find_element(By.XPATH, '//label[@for="formCadastro:tipoViagem:1"]')
             tipo_ida.click()
@@ -154,16 +171,17 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
         botao_destino = w.until(EC.element_to_be_clickable((By.ID, 'j_idt4024')))
         botao_destino.click()
 
-        destino_novo = w.until(EC.element_to_be_clickable((By.ID, 'destinoNovo')))
-
         if paciente['tipo'] == 'IDA/VOLTA' or paciente['tipo'] == 'IDA':
+            destino_novo = w.until(EC.element_to_be_clickable((By.ID, 'destinoNovo')))
             destino_novo.send_keys(paciente['destino'])
+
         elif paciente['tipo'] == 'VOLTA':
+            destino_novo = w.until(EC.element_to_be_clickable((By.ID, "destinoNovo")))
             destino_novo.send_keys(local_espera)
         else:
             raise
 
-        
+        # COLOCAR CIDADE DO DESTINO
         municipio_destino = w.until(EC.element_to_be_clickable((By.ID, "municipio_destino_input")))
         municipio_destino.send_keys(paciente['cidade_destino'])
 
@@ -240,12 +258,12 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
 
             time.sleep(2)
 
-            if paciente['tipo'] == 'IDA' or paciente['tipo'] == 'VOLTA':
-                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_label'))).click()
-
             if paciente['tipo'] == 'IDA':
+                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_label'))).click()
                 w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_1'))).click()
+
             elif paciente['tipo'] == 'VOLTA':
+                w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_label'))).click()
                 w.until(EC.element_to_be_clickable((By.ID, 'tipoViagemAcomp_2'))).click()
 
             w.until(EC.element_to_be_clickable((By.ID, 'esperaAcomp_input'))).send_keys("O MESMO")
@@ -256,7 +274,11 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
             w.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="dialog_search_acompanhante_id"]/div[1]/a'))).click()
 
         # APERTAR BOTAO DE SALVAR
+        time.sleep(1.5)
+        #botao_salvar = w.until(EC.element_to_be_clickable((By.ID, 'formCadastro:j_idt3934')))
+        #botao_salvar.click()
         print(f"{horario_atual()} Paciente {paciente['id']} adicionado no dia {dia}")
+        time.sleep(.5)
 
 
 # def duplicar_viagem(driver, viagem, url_viagem, dias):
