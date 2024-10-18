@@ -4,7 +4,10 @@ import pyautogui
 import criarViagem
 import viagens
 import calendario
+from horario import horario_atual
 import argparse
+import logging
+logger = logging.getLogger(__name__)
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -28,6 +31,8 @@ senha = args.senha
 
 if senha == "":
     raise KeyError
+
+logging.basicConfig(filename='relatorio.log', level=logging.INFO)
 
 # Configurar driver
 chrome_options = webdriver.ChromeOptions()
@@ -54,8 +59,9 @@ estabelecimento = driver.find_element(By.CLASS_NAME, "ui-commandlink").click()
 time.sleep(2)
 
 # Pegar viagens das 3 listas
+logger.info(f"\n\n\n\n\n{horario_atual()} Nova execução!\n\n")
 if conf_vans == "S":
-    print("\nAgendando as vans comuns...\n\n")
+    logger.info(f"\n{horario_atual()} Agendando as vans comuns...\n")
     viagens_van = viagens.viagens_van
     segunda_a_sexta = calendario.separar_segunda_a_sexta(mes, ano)
 
@@ -69,7 +75,7 @@ else:
 
 
 if conf_hemo == "S":
-    print("\nAgendando hemodiálise...\n\n")
+    logger.info(f"\n{horario_atual()} Agendando hemodiálise...\n\n")
     viagens_sqs = viagens.viagens_segunda_quarta_sexta
     viagens_tqs = viagens.viagens_terca_quinta_sabado
 
@@ -88,7 +94,7 @@ elif conf_hemo == "N":
 else:
     raise
 
-print("\nTodas as viagens foram agendadas com sucesso!")
+logger.info(f"\n{horario_atual()} Todas as viagens foram agendadas com sucesso!")
 
 
 
