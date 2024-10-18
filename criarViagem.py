@@ -1,6 +1,8 @@
 import time
 import pyautogui
 import calendario
+import logging
+logger = logging.getLogger(__name__)
 from horario import horario_atual
 from retrying import retry
 
@@ -101,12 +103,12 @@ def criar_viagem(driver, viagem, dia, w):
 
     # Checa se viagem não tem pacientes para adicionar
     if len(viagem) == 1:
-        return print(f"{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n\n")
+        return logger.info(f"\n{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n")
 
 
     add_pacientes(driver, id_viagem, viagem, dia, w)
 
-    print(f"{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n\n")
+    logger.info(f"\n{horario_atual()} Viagem {viagem[0]} agendada com sucesso!\n")
 
     # duplicar essa viagem completa para todos os dias do mês
     #duplicar_viagem(driver, viagem, id_viagem, dias)
@@ -277,7 +279,8 @@ def add_pacientes(driver, id_viagem, viagem, dia, w):
         time.sleep(1.5)
         #botao_salvar = w.until(EC.element_to_be_clickable((By.ID, 'formCadastro:j_idt3934')))
         #botao_salvar.click()
-        print(f"{horario_atual()} Paciente {paciente['id']} adicionado no dia {dia}")
+        logger.info(f"{horario_atual()} Paciente {paciente['id']} adicionado no dia {dia}")
+        
         time.sleep(.5)
 
 
